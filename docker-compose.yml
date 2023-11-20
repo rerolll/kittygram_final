@@ -1,4 +1,3 @@
-# docker-compose.yml
 version: '3'
 
 volumes:
@@ -10,19 +9,19 @@ volumes:
 services:
 
   db:
-    image: postgres:13
+    build: ./backend/
     container_name: kittygram_db
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend/
+    image: rerolll/kittygram_backend
     container_name: kittygram_backend
     env_file: .env
     volumes:
+      - media:/media/
       - static:/backend_static
-      - media:/app/media
     depends_on:
       - db
 
@@ -33,17 +32,13 @@ services:
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static/
-    depends_on:
-      - backend
 
   gateway:
     build: ./nginx/
     container_name: kittygram_gateway
     env_file: .env
     volumes:
-      - media:/app/media/
-      - static:/staticfiles
+      - media:/media/
+      - static:/staticfiles/
     ports:
       - 9000:80
-    depends_on:
-      - backend
