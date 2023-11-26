@@ -9,25 +9,22 @@ volumes:
 services:
 
   db:
-    build: ./backend/
-    container_name: kittygram_db
+    image: postgres:13.10
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: rerolll/kittygram_backend
-    container_name: kittygram_backend
+    build: ./backend/
     env_file: .env
     volumes:
-      - media:/media/
+      - media:/app/media/
       - static:/backend_static
     depends_on:
       - db
 
   frontend:
     build: ./frontend/
-    container_name: kittygram_frontend
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
@@ -35,8 +32,6 @@ services:
 
   gateway:
     build: ./nginx/
-    container_name: kittygram_gateway
-    env_file: .env
     volumes:
       - media:/media/
       - static:/staticfiles/

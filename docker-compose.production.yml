@@ -20,7 +20,7 @@ services:
     container_name: kittygram_backend
     env_file: .env
     volumes:
-      - media:/media/
+      - media:/app/media/
       - static:/backend_static
     depends_on:
       - db
@@ -36,7 +36,6 @@ services:
   gateway:
     image: rerolll/kittygram_gateway
     container_name: kittygram_gateway
-    env_file: .env
     volumes:
       - media:/media/
       - static:/staticfiles/
