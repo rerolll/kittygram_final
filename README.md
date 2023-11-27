@@ -1,4 +1,4 @@
-![example workflow](https://github.com/rerolll/kittygram/actions/workflows/main.yml/badge.svg)
+![example workflow](https://github.com/rerolll/kittygram_final/actions/workflows/main.yml/badge.svg)
 # Kittygram - социальная сеть для размещение фотографий домашних животных.
 
 ## Описание проекта
