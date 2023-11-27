@@ -1,26 +1,63 @@
-#  Как работать с репозиторием финального задания
+![example workflow](https://github.com/rerolll/kittygram/actions/workflows/main.yml/badge.svg)
+# Kittygram - социальная сеть для размещение фотографий домашних животных.
 
-## Что нужно сделать
+## Описание проекта
+Социальная сеть для обмена фотографиями любимых питомцев
 
-Настроить запуск проекта Kittygram в контейнерах и CI/CD с помощью GitHub Actions
+### Как запустить проект:
 
-## Как проверить работу с помощью автотестов
+Клонировать репозиторий и перейти в него в командной строке:
 
-В корне репозитория создайте файл tests.yml со следующим содержимым:
-```yaml
-repo_owner: ваш_логин_на_гитхабе
-kittygram_domain: полная ссылка (https://доменное_имя) на ваш проект Kittygram
-taski_domain: полная ссылка (https://доменное_имя) на ваш проект Taski
-dockerhub_username: ваш_логин_на_докерхабе
+```
+git clone https://github.com/rerolll/kittygram_final.git
 ```
 
-Скопируйте содержимое файла `.github/workflows/main.yml` в файл `kittygram_workflow.yml` в корневой директории проекта.
+Перейти в корневую директорию
+```
+cd kittygram_final
+```
 
-Для локального запуска тестов создайте виртуальное окружение, установите в него зависимости из backend/requirements.txt и запустите в корневой директории проекта `pytest`.
+Создать файл .evn для хранения ключей:
+```
+SECRET_KEY='указать секретный ключ'
+ALLOWED_HOSTS='указать имя или IP хоста'
+POSTGRES_USER=django_user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=kittygram
+DB_HOST=db
+DB_PORT=5432
+```
 
-## Чек-лист для проверки перед отправкой задания
+Создайте секреты в GitHub Actions
+Перейдите в настройки репозитория — Settings, выберите на панели слева Secrets and Variables → Actions, нажмите New repository secret и создайте следующие переменные:
+  - DOCKER_PASSWORD
+  - DOCKER_USERNAME
+  - HOST
+  - POSTGRES_DB
+  - POSTGRES_PASSWORD
+  - POSTGRES_USER
+  - SSH_KEY
+  - SSH_PASSPHRASE
+  - TELEGRAM_TO
+  - TELEGRAM_TOKEN
 
-- Проект Taski доступен по доменному имени, указанному в `tests.yml`.
-- Проект Kittygram доступен по доменному имени, указанному в `tests.yml`.
-- Пуш в ветку main запускает тестирование и деплой Kittygram, а после успешного деплоя вам приходит сообщение в телеграм.
-- В корне проекта есть файл `kittygram_workflow.yml`.
+Запустить docker-compose.production:
+
+```
+docker compose -f docker-compose.production.yml up
+```
+
+Выполнить миграции, сбор статики:
+
+```
+docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /static/static/
+
+```
+
+Создать суперпользователя:
+
+```
+docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
+```
